@@ -4,6 +4,13 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias ~="cd ~"
 
+alias df='df -h'
+alias du='du -h'
+
+alias v="vim"
+
+alias q="exit"
+
 # Git Commands
 alias g="git"
 alias gb="git branch"
@@ -25,3 +32,6 @@ alias dc="docker-compose"
 
 # Python
 alias p="python"
+
+# GPUs
+alias ns="nvidia-smi"
