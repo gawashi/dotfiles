@@ -1,4 +1,4 @@
-leaset fenc=utf-8
+set fenc=utf-8
 
 set nobackup
 set nowritebackup
