@@ -16,6 +16,7 @@ alias g="git"
 alias gb="git branch"
 alias gc="git checkout"
 alias gs="git status"
+alias gf="git fetch"
 
 # Docker Commands
 alias d="docker"
@@ -32,6 +33,8 @@ alias dc="docker-compose"
 
 # Python
 alias p="python"
+alias act="source venv/bin/activate"
+alias deact="deactivate"
 
 # GPUs
 alias ns="nvidia-smi"
