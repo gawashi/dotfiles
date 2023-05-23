@@ -18,6 +18,11 @@ alias gc="git checkout"
 alias gs="git status"
 alias gf="git fetch"
 
+# tmux Commands
+alias t='tmux'
+alias tl='tmux ls'
+alias tk='tmux kill-session -t'
+
 # Docker Commands
 alias d="docker"
 alias da="docker attach"
