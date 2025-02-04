@@ -21,6 +21,7 @@ alias gf="git fetch"
 # tmux Commands
 alias t='tmux'
 alias tl='tmux ls'
+alias ta='tmux a -t'
 alias tk='tmux kill-session -t'
 
 # Docker Commands
@@ -43,3 +44,8 @@ alias deact="deactivate"
 
 # GPUs
 alias ns="nvidia-smi"
+
+gpus() {
+  export CUDA_VISIBLE_DEVICES="$1"
+}
+
