@@ -35,7 +35,7 @@ alias ds="docker stop"
 alias dt="docker tag"
 
 # Docker Compose Commands
-alias dc="docker-compose"
+alias dc="docker compose"
 
 # Python
 alias p="python"
