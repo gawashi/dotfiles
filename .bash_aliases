@@ -17,6 +17,7 @@ alias gb="git branch"
 alias gc="git checkout"
 alias gs="git status"
 alias gf="git fetch"
+alias gp="git pull"
 
 # tmux Commands
 alias t='tmux'
@@ -39,7 +40,7 @@ alias dc="docker compose"
 
 # Python
 alias p="python"
-alias act="source venv/bin/activate"
+alias act="source .venv/bin/activate"
 alias deact="deactivate"
 
 # GPUs
