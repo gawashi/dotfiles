@@ -116,5 +116,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-source $HOME/.local/bin/env
-
+# Source the user's local environment if it exists
+if [ -f "$HOME/.local/bin/env" ]; then
+    source "$HOME/.local/bin/env"
+fi

@@ -13,11 +13,14 @@ alias q="exit"
 
 # Git Commands
 alias g="git"
+alias ga='git add'
 alias gb="git branch"
 alias gc="git checkout"
 alias gs="git status"
 alias gf="git fetch"
 alias gp="git pull"
+alias gpo='git push origin'
+alias gl='git log --oneline --graph --decorate'
 
 # tmux Commands
 alias t='tmux'
@@ -40,8 +43,12 @@ alias dc="docker compose"
 
 # Python
 alias p="python"
-alias act="source .venv/bin/activate"
-alias deact="deactivate"
+
+alias u="uv" 
+alias ui="uv init"
+alias ua="uv add"
+alias urm="uv remove"
+alias ur="uv run"
 
 # GPUs
 alias ns="nvidia-smi"
