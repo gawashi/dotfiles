@@ -13,14 +13,14 @@ alias q="exit"
 
 # Git Commands
 alias g="git"
-alias ga='git add'
+alias ga="git add"
 alias gb="git branch"
 alias gc="git checkout"
 alias gs="git status"
 alias gf="git fetch"
 alias gp="git pull"
-alias gpo='git push origin'
-alias gl='git log --oneline --graph --decorate'
+alias gpom="git pull origin main"
+alias gl="git log --oneline --graph --decorate"
 
 # tmux Commands
 alias t='tmux'
@@ -49,6 +49,7 @@ alias ui="uv init"
 alias ua="uv add"
 alias urm="uv remove"
 alias ur="uv run"
+alias urp="ur run python"
 
 # GPUs
 alias ns="nvidia-smi"
