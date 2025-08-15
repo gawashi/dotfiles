@@ -9,6 +9,7 @@ alias du='du -h'
 
 alias v="vim"
 
+alias c="clear"
 alias q="exit"
 
 # Git Commands
