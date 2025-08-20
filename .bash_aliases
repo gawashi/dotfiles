@@ -41,6 +41,10 @@ alias dt="docker tag"
 
 # Docker Compose Commands
 alias dc="docker compose"
+    
+# Claude Commands
+alias cl="claude"
+
 
 # Python
 alias p="python"

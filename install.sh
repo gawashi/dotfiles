@@ -8,7 +8,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-BASEDIR=$(dirname $0)
+BASEDIR=$(cd "$(dirname "$0")" && pwd)
 BACKUP_DIR="$HOME/.dotfiles_backup_$(date +%Y%m%d_%H%M%S)"
 DRY_RUN=false
 FORCE=false
@@ -80,6 +80,77 @@ create_backup() {
     fi
 }
 
+handle_claude_subdirectory() {
+    local subdir="$1"
+    local claude_source="$BASEDIR/.claude"
+    local claude_target="$HOME/.claude"
+    local source_path="$(realpath "$claude_source/$subdir" 2>/dev/null || echo "$claude_source/$subdir")"
+    local target_path="$claude_target/$subdir"
+    
+    # Check if symlink already exists and points to correct source
+    if [[ -L "$target_path" ]]; then
+        local current_target="$(readlink "$target_path" 2>/dev/null || echo "")"
+        if [[ -n "$current_target" ]]; then
+            # Convert to absolute path if it's relative
+            if [[ "$current_target" != /* ]]; then
+                current_target="$(realpath "$(dirname "$target_path")/$current_target" 2>/dev/null || echo "$current_target")"
+            fi
+            
+            if [[ "$current_target" == "$source_path" ]]; then
+                log_info ".claude/$subdir is already correctly linked"
+                return 0
+            else
+                log_warning ".claude/$subdir is linked to $current_target (expected: $source_path)"
+                if [[ "$DRY_RUN" == false ]]; then
+                    ln -sf "$source_path" "$target_path"
+                    log_success "Relinked .claude/$subdir"
+                else
+                    log_info "Would relink .claude/$subdir -> $source_path"
+                fi
+            fi
+        fi
+    elif [[ -e "$target_path" ]]; then
+        log_warning "$subdir exists but is not a symlink"
+        if [[ "$FORCE" == false ]]; then
+            create_backup ".claude/$subdir"
+        fi
+        if [[ "$DRY_RUN" == false ]]; then
+            ln -sf "$source_path" "$target_path"
+            log_success "Linked .claude/$subdir"
+        else
+            log_info "Would link .claude/$subdir -> $source_path"
+        fi
+    else
+        # Target doesn't exist, create symlink
+        if [[ "$DRY_RUN" == false ]]; then
+            ln -sf "$source_path" "$target_path"
+            log_success "Linked .claude/$subdir"
+        else
+            log_info "Would link .claude/$subdir -> $source_path"
+        fi
+    fi
+}
+
+handle_claude_directory() {
+    local claude_source="$BASEDIR/.claude"
+    local claude_target="$HOME/.claude"
+    
+    # Create ~/.claude/ if it doesn't exist
+    if [[ ! -d "$claude_target" && "$DRY_RUN" == false ]]; then
+        mkdir -p "$claude_target"
+        log_info "Created directory: $claude_target"
+    elif [[ "$DRY_RUN" == true && ! -d "$claude_target" ]]; then
+        log_info "Would create directory: $claude_target"
+    fi
+    
+    # Handle subdirectories
+    for subdir in commands agents; do
+        if [[ -d "$claude_source/$subdir" ]]; then
+            handle_claude_subdirectory "$subdir"
+        fi
+    done
+}
+
 install_file() {
     local file="$1"
     local source="$(realpath "$PWD/$file" 2>/dev/null || echo "$PWD/$file")"
@@ -111,12 +182,26 @@ install_file() {
         fi
     fi
     
+    # Create parent directory if needed
+    local parent_dir="$(dirname "$target")"
+    if [[ ! -d "$parent_dir" && "$DRY_RUN" == false ]]; then
+        mkdir -p "$parent_dir"
+    fi
+    
     # Create symlink
     if [[ "$DRY_RUN" == false ]]; then
         ln -sf "$source" "$target"
-        log_success "Linked $file"
+        if [[ -d "$source" ]]; then
+            log_success "Linked directory $file"
+        else
+            log_success "Linked $file"
+        fi
     else
-        log_info "Would link $file -> $source"
+        if [[ -d "$source" ]]; then
+            log_info "Would link directory $file -> $source"
+        else
+            log_info "Would link $file -> $source"
+        fi
     fi
 }
 
@@ -175,10 +260,19 @@ main() {
         log_warning "DRY RUN MODE - No changes will be made"
     fi
     
-    # Find all dotfiles
+    # Handle .claude directory specially
+    if [[ -d ".claude" ]]; then
+        if confirm "Process .claude directory?"; then
+            handle_claude_directory
+        else
+            log_info "Skipping .claude directory"
+        fi
+    fi
+    
+    # Find all dotfiles and directories (excluding .claude)
     local dotfiles=()
     for file in .??*; do
-        if [[ -f "$file" ]] && ! is_ignored "$file"; then
+        if ([[ -f "$file" ]] || [[ -d "$file" ]]) && ! is_ignored "$file" && [[ "$file" != ".claude" ]]; then
             dotfiles+=("$file")
         fi
     done
