@@ -54,7 +54,7 @@ alias ui="uv init"
 alias ua="uv add"
 alias urm="uv remove"
 alias ur="uv run"
-alias urp="ur run python"
+alias urp="uv run python"
 
 # GPUs
 alias ns="nvidia-smi"
