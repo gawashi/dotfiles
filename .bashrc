@@ -120,3 +120,8 @@ fi
 if [ -f "$HOME/.local/bin/env" ]; then
     source "$HOME/.local/bin/env"
 fi
+
+if [ -f ~/.bashrc.local ]; then
+    . ~/.bashrc.local
+fi
+
