@@ -43,8 +43,8 @@ alias dt="docker tag"
 alias dc="docker compose"
     
 # Claude Commands
-alias c="claude"
-alias cdsp="claude --dangerously-skip-permissions"
+alias cl="claude"
+alias cldsp="claude --dangerously-skip-permissions"
 
 # Python
 alias p="python"
