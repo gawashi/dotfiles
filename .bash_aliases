@@ -46,6 +46,8 @@ alias dc="docker compose"
 alias cl="claude"
 alias cldsp="claude --dangerously-skip-permissions"
 
+alias ccu="npx ccusage@latest"
+
 # Python
 alias p="python"
 
