@@ -22,6 +22,9 @@ IGNORE_FILES=(
     "README.md"
     "install.sh"
     "Brewfile"
+    # Windows
+    "install.ps1"
+    "Microsoft.PowerShell_profile.ps1"
 )
 
 usage() {

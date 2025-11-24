@@ -20,7 +20,7 @@ alias gc="git checkout"
 alias gs="git status"
 alias gf="git fetch"
 alias gp="git pull"
-alias gpom="git pull origin main"
+alias gpo="git pull origin"
 alias gl="git log --oneline --graph --decorate"
 
 # tmux Commands
@@ -49,7 +49,7 @@ alias cldsp="claude --dangerously-skip-permissions"
 # Python
 alias p="python"
 
-alias u="uv" 
+alias u="uv"
 alias ui="uv init"
 alias ua="uv add"
 alias urm="uv remove"
