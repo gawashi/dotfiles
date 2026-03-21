@@ -83,77 +83,6 @@ create_backup() {
     fi
 }
 
-handle_claude_subdirectory() {
-    local subdir="$1"
-    local claude_source="$BASEDIR/.claude"
-    local claude_target="$HOME/.claude"
-    local source_path="$(realpath "$claude_source/$subdir" 2>/dev/null || echo "$claude_source/$subdir")"
-    local target_path="$claude_target/$subdir"
-    
-    # Check if symlink already exists and points to correct source
-    if [[ -L "$target_path" ]]; then
-        local current_target="$(readlink "$target_path" 2>/dev/null || echo "")"
-        if [[ -n "$current_target" ]]; then
-            # Convert to absolute path if it's relative
-            if [[ "$current_target" != /* ]]; then
-                current_target="$(realpath "$(dirname "$target_path")/$current_target" 2>/dev/null || echo "$current_target")"
-            fi
-            
-            if [[ "$current_target" == "$source_path" ]]; then
-                log_info ".claude/$subdir is already correctly linked"
-                return 0
-            else
-                log_warning ".claude/$subdir is linked to $current_target (expected: $source_path)"
-                if [[ "$DRY_RUN" == false ]]; then
-                    ln -sf "$source_path" "$target_path"
-                    log_success "Relinked .claude/$subdir"
-                else
-                    log_info "Would relink .claude/$subdir -> $source_path"
-                fi
-            fi
-        fi
-    elif [[ -e "$target_path" ]]; then
-        log_warning "$subdir exists but is not a symlink"
-        if [[ "$FORCE" == false ]]; then
-            create_backup ".claude/$subdir"
-        fi
-        if [[ "$DRY_RUN" == false ]]; then
-            ln -sf "$source_path" "$target_path"
-            log_success "Linked .claude/$subdir"
-        else
-            log_info "Would link .claude/$subdir -> $source_path"
-        fi
-    else
-        # Target doesn't exist, create symlink
-        if [[ "$DRY_RUN" == false ]]; then
-            ln -sf "$source_path" "$target_path"
-            log_success "Linked .claude/$subdir"
-        else
-            log_info "Would link .claude/$subdir -> $source_path"
-        fi
-    fi
-}
-
-handle_claude_directory() {
-    local claude_source="$BASEDIR/.claude"
-    local claude_target="$HOME/.claude"
-    
-    # Create ~/.claude/ if it doesn't exist
-    if [[ ! -d "$claude_target" && "$DRY_RUN" == false ]]; then
-        mkdir -p "$claude_target"
-        log_info "Created directory: $claude_target"
-    elif [[ "$DRY_RUN" == true && ! -d "$claude_target" ]]; then
-        log_info "Would create directory: $claude_target"
-    fi
-    
-    # Handle subdirectories
-    for subdir in commands agents; do
-        if [[ -d "$claude_source/$subdir" ]]; then
-            handle_claude_subdirectory "$subdir"
-        fi
-    done
-}
-
 install_file() {
     local file="$1"
     local source="$(realpath "$PWD/$file" 2>/dev/null || echo "$PWD/$file")"
@@ -205,6 +134,99 @@ install_file() {
         else
             log_info "Would link $file -> $source"
         fi
+    fi
+}
+
+install_claude_symlink() {
+    local source="$1"
+    local target="$2"
+    local label="$3"
+
+    local parent_dir
+    parent_dir="$(dirname "$target")"
+    if [[ ! -d "$parent_dir" && "$DRY_RUN" == false ]]; then
+        mkdir -p "$parent_dir"
+    fi
+
+    # Check if symlink already exists and points to correct source
+    if [[ -L "$target" ]]; then
+        local current_target
+        current_target="$(readlink "$target" 2>/dev/null || echo "")"
+        if [[ "$current_target" != /* ]]; then
+            current_target="$(realpath "$(dirname "$target")/$current_target" 2>/dev/null || echo "$current_target")"
+        fi
+        if [[ "$current_target" == "$source" ]]; then
+            log_info "$label is already correctly linked"
+            return 0
+        else
+            log_warning "$label is linked to $current_target (expected: $source)"
+        fi
+    fi
+
+    if [[ "$DRY_RUN" == false ]]; then
+        ln -sf "$source" "$target"
+        log_success "Linked $label"
+    else
+        log_info "Would link $label -> $source"
+    fi
+}
+
+install_claude_skills() {
+    local skills_source="$BASEDIR/.claude/skills"
+    local skills_target="$HOME/.claude/skills"
+
+    if [[ ! -d "$skills_source" ]]; then
+        return 0
+    fi
+
+    for file in "$skills_source"/*.md; do
+        [[ -f "$file" ]] || continue
+        local filename
+        filename="$(basename "$file")"
+        install_claude_symlink "$(realpath "$file" 2>/dev/null || echo "$file")" "$skills_target/$filename" ".claude/skills/$filename"
+    done
+}
+
+install_claude_rules() {
+    local rules_source="$BASEDIR/.claude/rules"
+    local rules_target="$HOME/.claude/rules"
+
+    if [[ ! -d "$rules_source" ]]; then
+        return 0
+    fi
+
+    for file in "$rules_source"/*.md; do
+        [[ -f "$file" ]] || continue
+        local filename
+        filename="$(basename "$file")"
+        install_claude_symlink "$(realpath "$file" 2>/dev/null || echo "$file")" "$rules_target/$filename" ".claude/rules/$filename"
+    done
+}
+
+install_tools() {
+    if [[ "$DRY_RUN" == true ]]; then
+        log_info "Would install Claude Code plugins (superpowers, context7, serena)"
+        log_info "Would install GSD via npx get-shit-done-cc@latest"
+        return 0
+    fi
+
+    log_info "Installing Claude Code plugins..."
+    # Note: verify exact syntax with 'claude plugin --help' if this fails
+    if command -v claude &>/dev/null; then
+        claude plugin install superpowers@claude-plugins-official || true
+        claude plugin install context7@claude-plugins-official || true
+        claude plugin install serena@claude-plugins-official || true
+        log_success "Claude plugins installed"
+    else
+        log_warning "claude CLI not found — skipping plugin installs"
+    fi
+
+    log_info "Installing GSD..."
+    if command -v npx &>/dev/null; then
+        npx get-shit-done-cc@latest
+        log_success "GSD installed"
+    else
+        log_warning "npx not found — skipping GSD install"
     fi
 }
 
@@ -263,12 +285,16 @@ main() {
         log_warning "DRY RUN MODE - No changes will be made"
     fi
     
-    # Handle .claude directory specially
+    # Handle .claude skills and rules
     if [[ -d ".claude" ]]; then
-        if confirm "Process .claude directory?"; then
-            handle_claude_directory
+        if confirm "Install Claude Code skills and rules?"; then
+            if [[ "$DRY_RUN" == false ]]; then
+                mkdir -p "$HOME/.claude/skills" "$HOME/.claude/rules"
+            fi
+            install_claude_skills
+            install_claude_rules
         else
-            log_info "Skipping .claude directory"
+            log_info "Skipping Claude Code skills and rules"
         fi
     fi
     
@@ -315,6 +341,13 @@ main() {
         fi
     fi
     
+    # Install tools
+    if confirm "Install Claude Code plugins and GSD?"; then
+        install_tools
+    else
+        log_info "Skipping tool installs"
+    fi
+
     # Show next steps
     echo
     log_info "Next steps:"
