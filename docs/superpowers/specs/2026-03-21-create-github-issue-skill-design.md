@@ -39,8 +39,9 @@ Invoked
 5. Display preview — ALWAYS
    → User approves  → execute `gh issue create`
    → User edits     → Claude asks which field to revise (title, body, or labels),
-                       accepts free-text correction, regenerates preview; loop repeats until approved or cancelled
-   → User cancels   → abort, resume implementation
+                       accepts free-text correction, regenerates preview;
+                       user can cancel at any iteration of the edit loop
+   → User cancels   → output "Issue creation cancelled. Resuming implementation." then resume
 6. Report: "Issue #N created: <URL>" (single line)
 7. Resume implementation
 ```
@@ -79,8 +80,8 @@ Auto-detected from the current git remote via `gh repo view`. No manual specific
 ## Phase/Plan Detection
 
 Look up in this order:
-1. `docs/superpowers/plans/` — use the most recently modified `.md` file
-2. `.planning/` — use the most recently modified `.md` file
+1. `docs/superpowers/plans/` — use the most recently modified `.md` file; if timestamps are equal, use reverse lexicographic order (latest date-prefixed filename wins)
+2. `.planning/` — same rule as above
 3. If neither directory exists or contains `.md` files, omit the Phase/Plan line from the issue body entirely
 
 The value in the issue body is formatted as the filename (e.g., `docs/superpowers/plans/2026-03-21-auth.md`). "Phase N" labels are not inferred.
@@ -100,6 +101,8 @@ The `## Workaround Applied` section — including the heading — is **fully omi
 
 ## gh CLI Usage
 
+Example with workaround applied (`## Workaround Applied` is **fully omitted** — including the heading — when no workaround exists):
+
 ```bash
 body=$(cat <<'EOF'
 ## Problem
@@ -108,7 +111,7 @@ body=$(cat <<'EOF'
 ## Context
 - **File/Symbol:** src/auth/redirect.ts
 - **Task:** Implement OAuth callback handler
-- **Phase/Plan:** Phase 3 — docs/superpowers/plans/2026-03-21-auth.md
+- **Phase/Plan:** docs/superpowers/plans/2026-03-21-auth.md
 
 ## Workaround Applied
 Added null check as temporary guard.
