@@ -226,10 +226,10 @@ install_tools() {
     log_info "Installing Claude Code plugins..."
     # Note: verify exact syntax with 'claude plugin --help' if this fails
     if command -v claude &>/dev/null; then
-        claude plugin install superpowers@claude-plugins-official || true
-        claude plugin install context7@claude-plugins-official || true
-        claude plugin install serena@claude-plugins-official || true
-        claude plugin install skill-creator@claude-plugins-official || true
+        claude plugin install superpowers@claude-plugins-official </dev/null || true
+        claude plugin install context7@claude-plugins-official </dev/null || true
+        claude plugin install serena@claude-plugins-official </dev/null || true
+        claude plugin install skill-creator@claude-plugins-official </dev/null || true
         log_success "Claude plugins installed"
     else
         log_warning "claude CLI not found — skipping plugin installs"
@@ -237,7 +237,7 @@ install_tools() {
 
     log_info "Installing GSD..."
     if command -v npx &>/dev/null; then
-        npx get-shit-done-cc@latest
+        npx get-shit-done-cc@latest --claude --global
         log_success "GSD installed"
     else
         log_warning "npx not found — skipping GSD install"
