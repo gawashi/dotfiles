@@ -205,8 +205,7 @@ install_claude_rules() {
 
 install_tools() {
     if [[ "$DRY_RUN" == true ]]; then
-        log_info "Would install Claude Code plugins (superpowers, context7, serena)"
-        log_info "Would install GSD via npx get-shit-done-cc@latest"
+        log_info "Would install Claude Code plugins"
         return 0
     fi
 
@@ -216,6 +215,7 @@ install_tools() {
         claude plugin install superpowers@claude-plugins-official || true
         claude plugin install context7@claude-plugins-official || true
         claude plugin install serena@claude-plugins-official || true
+        claude plugin install skill-creator@claude-plugins-official || true
         log_success "Claude plugins installed"
     else
         log_warning "claude CLI not found — skipping plugin installs"
