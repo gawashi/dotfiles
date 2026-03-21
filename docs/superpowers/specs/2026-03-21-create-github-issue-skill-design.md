@@ -15,7 +15,7 @@ A general-purpose development skill (`/create-github-issue`) that Claude or the 
 
 `create-github-issue`
 
-**Location:** User-authored general development skill (not superpowers-specific)
+**Location:** `~/.claude/skills/create-github-issue.md` — markdown prompt skill, user-authored, general development (not superpowers-specific)
 
 ## Trigger Conditions
 
@@ -38,7 +38,8 @@ Invoked
    - Labels: selected from existing labels — no new labels created
 5. Display preview — ALWAYS
    → User approves  → execute `gh issue create`
-   → User edits     → revise content, show preview again
+   → User edits     → Claude asks which field to revise (title, body, or labels),
+                       accepts free-text correction, regenerates preview; loop repeats until approved or cancelled
    → User cancels   → abort, resume implementation
 6. Report: "Issue #N created: <URL>" (single line)
 7. Resume implementation
@@ -69,11 +70,33 @@ Verb-first, specific and descriptive:
 
 ## Label Selection
 
-Claude selects from existing labels retrieved via `gh label list`. No new labels are created. Claude picks the most contextually appropriate label(s) from the existing set.
+Claude selects from existing labels retrieved via `gh label list`. No new labels are created. Claude picks the most contextually appropriate label(s) from the existing set. If no existing label is a reasonable match, the issue is created with no labels.
 
 ## Repository Detection
 
 Auto-detected from the current git remote via `gh repo view`. No manual specification needed.
+
+## Phase/Plan Detection
+
+Look up in this order:
+1. `docs/superpowers/plans/` — use the most recently modified `.md` file
+2. `.planning/` — use the most recently modified `.md` file
+3. If neither directory exists or contains `.md` files, omit the Phase/Plan line from the issue body entirely
+
+The value in the issue body is formatted as the filename (e.g., `docs/superpowers/plans/2026-03-21-auth.md`). "Phase N" labels are not inferred.
+
+## Workaround Applied
+
+The `## Workaround Applied` section — including the heading — is **fully omitted** from the issue body when no workaround was applied. It is not left blank.
+
+## Error Handling
+
+| Failure | Behavior |
+|---------|----------|
+| `gh` not authenticated | Abort before any action; show: "gh is not authenticated. Run `gh auth login` first." |
+| No git remote / not a GitHub repo (`gh repo view` fails) | Abort; show: "Could not detect a GitHub repository. Ensure you are in a git repo with a GitHub remote." |
+| `gh label list` returns zero labels | Proceed with no labels |
+| `gh issue create` fails (network, permissions) | Surface the error message; offer to retry or abort |
 
 ## gh CLI Usage
 
