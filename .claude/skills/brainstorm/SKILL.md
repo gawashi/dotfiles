@@ -35,21 +35,7 @@ Before asking questions, understand what the user already knows and has tried. A
 topic and summarize your understanding of it. If the user came with background information,
 reflect it back briefly so they can confirm or correct it.
 
-### Step 2: Offer visual companion
-
-Send this as its own message — no questions or other content combined with it:
-
-> "Some of what we're working on might be easier to explain if I can show it to you in a web
-> browser. I can put together mockups, diagrams, comparisons, and other visuals as we go. This
-> feature is still new and can be token-intensive. Want to try it? (Requires opening a local URL)"
-
-If accepted, find and read the visual companion guide. It is at:
-`/home/gawashi/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.5/skills/brainstorming/visual-companion.md`
-(if this path fails, search for `visual-companion.md` in the superpowers skills directory)
-
-Decide per-question whether visuals add value — don't use the browser for everything.
-
-### Step 3: Ask clarifying questions
+### Step 2: Ask clarifying questions
 
 Ask one question at a time. Use multiple-choice format where possible — it's faster for the
 user and surfaces options they might not have considered. Focus on:
@@ -61,7 +47,7 @@ user and surfaces options they might not have considered. Focus on:
 
 Don't front-load all questions at once. Let answers inform the next question.
 
-### Step 4: Scope check
+### Step 3: Scope check
 
 Before going deep, check whether the topic is actually multiple independent sub-problems bundled
 together. If it is, flag it:
@@ -71,7 +57,7 @@ together. If it is, flag it:
 
 Help the user decompose and pick a starting point before continuing.
 
-### Step 5: Propose approaches
+### Step 4: Propose approaches
 
 Offer 2-3 distinct ways to approach the topic. For each, give:
 - A short label or name
@@ -80,14 +66,14 @@ Offer 2-3 distinct ways to approach the topic. For each, give:
 
 End with a recommendation and your reasoning. Ask the user which direction they want to take.
 
-### Step 6: Design in sections
+### Step 5: Design in sections
 
 Present the planned document structure and get agreement on it. Then co-create the content
 through dialogue, section by section — present each section as a draft or outline, get the
 user's approval or feedback, then refine before moving on. This is collaborative dialogue:
 you're building agreement on the content, not writing the final file yet.
 
-### Step 7: Write the document
+### Step 6: Write the document
 
 Once the content for all sections is agreed upon, write the final document to disk at:
 
@@ -120,7 +106,7 @@ type: <decision | creative | business | research | other>
 
 Every document ends with an **Open Questions** or **Next Steps** section.
 
-### Step 8: Review loop
+### Step 7: Review loop
 
 After writing the document, dispatch a subagent to review it. The reviewer checks:
 
@@ -133,7 +119,7 @@ After writing the document, dispatch a subagent to review it. The reviewer check
 If issues are found, fix them and re-dispatch. Maximum 3 iterations. If the document still has
 unresolved issues after 3 iterations, surface them to the user rather than silently moving on.
 
-### Step 9: User review gate
+### Step 8: User review gate
 
 After the review loop passes, send:
 
@@ -143,7 +129,7 @@ After the review loop passes, send:
 Wait for the user's response. If they request changes, update the document and re-run the
 review loop (Step 8) before returning here.
 
-### Step 10: Offer next steps
+### Step 9: Offer next steps
 
 After the user approves the document, pick 2-3 options from this pool — choose the ones most
 relevant to the specific topic and what the user is trying to accomplish:
