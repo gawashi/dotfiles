@@ -16,12 +16,13 @@ alias q="exit"
 alias g="git"
 alias ga="git add"
 alias gb="git branch"
-alias gc="git checkout"
 alias gs="git status"
 alias gf="git fetch"
 alias gp="git pull"
 alias gpo="git pull origin"
 alias gl="git log --oneline --graph --decorate"
+alias gsw="git switch"
+alias grs="git restore"
 
 # tmux Commands
 alias t='tmux'

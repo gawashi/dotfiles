@@ -2,12 +2,13 @@
 function g { git @args }
 function ga { git add @args }
 function gb { git branch @args }
-function gc { git checkout @args }
 function gs { git status @args }
 function gf { git fetch @args }
 function gp { git pull @args }
 function gpo { git pull origin @args }
 function gl { git log --oneline --graph --decorate @args }
+function gsw { git switch @args }
+function grs { git restore @args }
 
 # Python - UV aliases
 function ui { uv init @args }
