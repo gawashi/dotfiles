@@ -179,12 +179,19 @@ install_claude_skills() {
         return 0
     fi
 
-    for file in "$skills_source"/*.md; do
+    while IFS= read -r -d '' file; do
         [[ -f "$file" ]] || continue
-        local filename
-        filename="$(basename "$file")"
-        install_claude_symlink "$(realpath "$file" 2>/dev/null || echo "$file")" "$skills_target/$filename" ".claude/skills/$filename"
-    done
+        local rel_path="${file#"$skills_source"/}"
+        local abs_source
+        abs_source="$(realpath "$file" 2>/dev/null || echo "$file")"
+        local target="$skills_target/$rel_path"
+        local target_dir
+        target_dir="$(dirname "$target")"
+        if [[ "$DRY_RUN" == false ]]; then
+            mkdir -p "$target_dir"
+        fi
+        install_claude_symlink "$abs_source" "$target" ".claude/skills/$rel_path"
+    done < <(find "$skills_source" -name "*.md" -print0)
 }
 
 install_claude_rules() {
@@ -195,12 +202,19 @@ install_claude_rules() {
         return 0
     fi
 
-    for file in "$rules_source"/*.md; do
+    while IFS= read -r -d '' file; do
         [[ -f "$file" ]] || continue
-        local filename
-        filename="$(basename "$file")"
-        install_claude_symlink "$(realpath "$file" 2>/dev/null || echo "$file")" "$rules_target/$filename" ".claude/rules/$filename"
-    done
+        local rel_path="${file#"$rules_source"/}"
+        local abs_source
+        abs_source="$(realpath "$file" 2>/dev/null || echo "$file")"
+        local target="$rules_target/$rel_path"
+        local target_dir
+        target_dir="$(dirname "$target")"
+        if [[ "$DRY_RUN" == false ]]; then
+            mkdir -p "$target_dir"
+        fi
+        install_claude_symlink "$abs_source" "$target" ".claude/rules/$rel_path"
+    done < <(find "$rules_source" -name "*.md" -print0)
 }
 
 install_tools() {
