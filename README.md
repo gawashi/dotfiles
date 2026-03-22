@@ -1,34 +1,42 @@
 # dotfiles
 
-Personal dotfiles configuration for Linux systems. This repository contains my shell configurations, vim settings, tmux configuration, and other dotfiles to quickly set up a development environment.
+Personal dotfiles for Linux and Windows (WSL2/PowerShell). Shell configs, editor settings, installers, and Claude Code customizations to quickly set up a development environment.
 
-## 📋 What's Included
+## What's Included
 
-- **`.bashrc`** - Enhanced bash configuration with custom prompts and settings
-- **`.bash_aliases`** - Convenient shell aliases for navigation, git, and common commands
-- **`.bash_profile`** - Bash profile configuration
-- **`.vimrc`** - Vim editor configuration with sensible defaults
-- **`.tmux.conf`** - tmux terminal multiplexer configuration
-- **`.gitignore`** - Global gitignore patterns
-- **`.claude/`** - Claude Code custom commands and configurations
+- `.bashrc` — enhanced bash configuration with custom prompts and settings
+- `.bash_aliases` — shell aliases for navigation, git, and common commands
+- `.bash_profile` — bash profile configuration
+- `.vimrc` — vim editor configuration with sensible defaults
+- `.tmux.conf` — tmux terminal multiplexer configuration
+- `.gitignore` — global gitignore patterns
+- `.claude/` — Claude Code skills, rules, and local settings
+- `Microsoft.PowerShell_profile.ps1` — PowerShell profile for Windows
+- `install.sh` — Linux installer with symlinks and plugin setup
+- `install.ps1` — Windows installer
 
-## 🚀 Quick Install
+## Quick Install - Linux
 
 ```bash
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+git clone https://github.com/gawashi/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ./install.sh
 ```
 
-## 📦 Installation Options
+## Quick Install - Windows (PowerShell)
 
-The install script supports several options:
+```powershell
+git clone https://github.com/gawashi/dotfiles.git $HOME\dotfiles
+cd $HOME\dotfiles
+.\install.ps1
+```
 
-```bash
-./install.sh [OPTIONS]
+## Installation Options (Linux)
 
+```
+Usage: ./install.sh [OPTIONS]
 Options:
-  -h, --help       Show help message
+  -h, --help       Show this help message
   -f, --force      Force overwrite existing files without backup
   -y, --yes        Skip confirmation prompts
   -d, --dry-run    Show what would be done without making changes
@@ -41,22 +49,27 @@ Examples:
   ./install.sh -f -y           # Force install without prompts
 ```
 
-## 🔧 Manual Setup
+## Claude Code
 
-If you prefer manual installation:
+### Skills
 
-```bash
-# Backup existing files
-cp ~/.bashrc ~/.bashrc.backup
-cp ~/.vimrc ~/.vimrc.backup
+- `brainstorm` — general-purpose brainstorming assistant for any non-software topic
+- `create-github-issue` — creates a GitHub Issue to capture a design deficiency or oversight without interrupting the current task
+- `tech-qa` — answers technical questions by researching authoritative sources
 
-# Copy dotfiles
-cp .bashrc ~/.bashrc
-cp .bash_aliases ~/.bash_aliases
-cp .bash_profile ~/.bash_profile
-cp .vimrc ~/.vimrc
-cp .tmux.conf ~/.tmux.conf
+### Rules
 
-# Reload bash configuration
-source ~/.bashrc
-```
+`.claude/rules/` exists for project-specific rules (currently empty).
+
+### Plugins
+
+Installed via `claude plugin install`:
+
+- `superpowers` — skill framework and workflow enhancements ([GitHub](https://github.com/obra/superpowers))
+- `context7` — library documentation lookup ([GitHub](https://github.com/upstash/context7))
+- `serena` — semantic code analysis and editing ([GitHub](https://github.com/oraios/serena))
+- `skill-creator` — create and manage custom skills ([GitHub](https://github.com/anthropics/claude-plugins-official))
+
+### GSD
+
+Installed via `npx get-shit-done-cc@latest` — project management and execution framework for Claude Code ([GitHub](https://github.com/gsd-build/get-shit-done)).
