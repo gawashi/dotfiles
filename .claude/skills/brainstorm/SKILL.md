@@ -1,13 +1,12 @@
 ---
 name: brainstorm
 description: >
-  General-purpose brainstorming assistant for any non-software topic. Use this skill whenever
-  the user presents an open-ended idea, decision to make, creative project, business idea,
-  research direction, personal dilemma, or life planning question — even if they didn't explicitly
-  ask for brainstorming. Trigger when: the user is weighing options and hasn't reached a
-  conclusion, exploring a concept, or needs to think through something without a clear next
-  action. Do NOT trigger for software development topics (new features, architecture decisions,
-  codebase changes) — defer to superpowers:brainstorming instead.
+  General-purpose brainstorming for non-software topics. Trigger when the user presents an
+  open-ended idea, decision, creative project, business idea, research direction, or life
+  planning question — even without explicitly asking. Also trigger when the user is weighing
+  options, exploring a concept, facing a personal dilemma, or needs to think through something
+  without a clear next action. Do NOT trigger for software development topics — defer to
+  superpowers:brainstorming instead.
 ---
 
 # brainstorm
@@ -25,6 +24,12 @@ or anything that will result in writing or modifying code — stop here and outp
 
 Then stop.
 
+## Anti-Pattern: "This Is Just A Quick Question"
+
+Every topic goes through this process. A career fork, a naming decision, a one-paragraph
+plan — all of them. "Quick" topics are where unexamined assumptions cause the most wasted
+thinking. The document can be short, but you MUST complete the process and get approval.
+
 ## Process
 
 Follow these steps in order.
@@ -35,19 +40,7 @@ Before asking questions, understand what the user already knows and has tried. A
 topic and summarize your understanding of it. If the user came with background information,
 reflect it back briefly so they can confirm or correct it.
 
-### Step 2: Ask clarifying questions
-
-Ask one question at a time. Use multiple-choice format where possible — it's faster for the
-user and surfaces options they might not have considered. Focus on:
-
-- **Purpose** — what outcome are they hoping for?
-- **Constraints** — time, money, people, energy, hard limits
-- **Who it's for** — just themselves, a team, an audience, a customer?
-- **Success criteria** — what does "done" or "good" look like?
-
-Don't front-load all questions at once. Let answers inform the next question.
-
-### Step 3: Scope check
+### Step 2: Scope check
 
 Before going deep, check whether the topic is actually multiple independent sub-problems bundled
 together. If it is, flag it:
@@ -56,6 +49,17 @@ together. If it is, flag it:
 > clearly if we tackle them one at a time. Which should we start with?"
 
 Help the user decompose and pick a starting point before continuing.
+
+### Step 3: Ask clarifying questions
+
+**One question per message. No exceptions.** If two questions feel related, they are still
+two messages. Use multiple-choice format where possible — it's faster for the user and
+surfaces options they might not have considered. Focus on:
+
+- **Purpose** — what outcome are they hoping for?
+- **Constraints** — time, money, people, energy, hard limits
+- **Who it's for** — just themselves, a team, an audience, a customer?
+- **Success criteria** — what does "done" or "good" look like?
 
 ### Step 4: Propose approaches
 
@@ -70,8 +74,7 @@ End with a recommendation and your reasoning. Ask the user which direction they 
 
 Present the planned document structure and get agreement on it. Then co-create the content
 through dialogue, section by section — present each section as a draft or outline, get the
-user's approval or feedback, then refine before moving on. This is collaborative dialogue:
-you're building agreement on the content, not writing the final file yet.
+user's approval or feedback, then refine before moving on.
 
 ### Step 6: Write the document
 
@@ -81,8 +84,7 @@ Once the content for all sections is agreed upon, write the final document to di
 docs/brainstorming/YYYY-MM-DD-<topic-slug>.md
 ```
 
-Use today's date. The topic slug is a short kebab-case summary of the topic (e.g.,
-`career-pivot-decision`, `podcast-launch-plan`).
+Use today's date. Topic slug examples: `career-pivot-decision`, `podcast-launch-plan`.
 
 **Document frontmatter** — always include at the top:
 
@@ -108,16 +110,10 @@ Every document ends with an **Open Questions** or **Next Steps** section.
 
 ### Step 7: Review loop
 
-After writing the document, dispatch a subagent to review it. The reviewer checks:
-
-- No TODOs, placeholders, or incomplete sections
-- No internal contradictions
-- Ideas and requirements are clear enough to act on
-- Scoped to a single topic (not multiple independent ideas bundled together)
-- No unnecessary padding or over-engineering
-
-If issues are found, fix them and re-dispatch. Maximum 3 iterations. If the document still has
-unresolved issues after 3 iterations, surface them to the user rather than silently moving on.
+After writing the document, dispatch a subagent to review it. Read the reviewer instructions
+from `reviewer-prompt.md` in this skill's directory (next to this SKILL.md). Maximum 3
+iterations. If unresolved issues remain after
+3 iterations, surface them to the user.
 
 ### Step 8: User review gate
 
@@ -126,8 +122,8 @@ After the review loop passes, send:
 > "Doc written to `<path>`. Please review it and let me know if you want any changes before
 > we look at next steps."
 
-Wait for the user's response. If they request changes, update the document and re-run the
-review loop (Step 8) before returning here.
+Wait for the user's response. If they request changes, update the document and re-run
+Step 7 before returning here.
 
 ### Step 9: Offer next steps
 
@@ -138,7 +134,6 @@ relevant to the specific topic and what the user is trying to accomplish:
 - **Turn into a pitch/outline** — structure for presenting to others
 - **Identify risks and open questions** — dedicated deep-dive on what could go wrong
 - **Research further** — identify key things to investigate before committing
-- **Write implementation plan** — if software-adjacent, invoke the `writing-plans` skill
 - **Nothing** — always include this; the user can take the doc and go
 
-Present them as numbered choices. The user can also suggest something not on the list.
+Present them as numbered choices.
