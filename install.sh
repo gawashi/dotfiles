@@ -230,6 +230,7 @@ install_tools() {
         claude plugin install context7@claude-plugins-official </dev/null || true
         claude plugin install serena@claude-plugins-official </dev/null || true
         claude plugin install skill-creator@claude-plugins-official </dev/null || true
+        claude plugin install commit-commands@claude-plugins-official </dev/null || true
         log_success "Claude plugins installed"
     else
         log_warning "claude CLI not found — skipping plugin installs"
