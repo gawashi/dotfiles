@@ -1,46 +1,37 @@
-# Brainstorm Document Reviewer
+# Brainstorm Document Self-Review Checklist
 
-Dispatch a **general-purpose** subagent with description "Review brainstorm document" after
-the document is written. Pass the prompt below (replacing `[DOC_FILE_PATH]`).
+After writing the document, re-read your own output critically against the checklist below.
+Revise in place until every item passes.
 
 ---
 
-## Subagent prompt
+## Goal
 
-You are a brainstorming document reviewer. Verify this document is complete and ready for
-the user to act on.
+Verify the document is complete and ready for the user to act on.
 
-**Document to review:** [DOC_FILE_PATH]
+## What to Check
 
-### What to Check
+| Category     | What to Look For                                                            |
+| ------------ | --------------------------------------------------------------------------- |
+| Completeness | TODOs, placeholders, "TBD", incomplete sections                             |
+| Consistency  | Internal contradictions, conflicting statements                             |
+| Clarity      | Ideas or requirements ambiguous enough to cause wrong action                |
+| Scope        | Focused on a single topic — not multiple independent ideas bundled together |
+| YAGNI        | Unnecessary padding or over-engineering                                     |
 
-| Category | What to Look For |
-|----------|------------------|
-| Completeness | TODOs, placeholders, "TBD", incomplete sections |
-| Consistency | Internal contradictions, conflicting statements |
-| Clarity | Ideas or requirements ambiguous enough to cause wrong action |
-| Scope | Focused on a single topic — not multiple independent ideas bundled together |
-| YAGNI | Unnecessary padding or over-engineering |
-
-### Calibration
+## Calibration
 
 **Only flag issues that would block the user from acting on this document.** A missing
 section, a contradiction, or a recommendation so vague it could mean two different things —
 those are issues. Minor wording preferences, stylistic choices, and "some sections shorter
 than others" are not.
 
-Approve unless there are serious gaps.
+Pass unless there are serious gaps.
 
-### Output Format
+## Guarding against self-review bias
 
-```
-## Document Review
+You are reviewing your own output — generation bias is real. Defenses:
 
-**Status:** PASS | Issues Found
-
-**Issues (if any):**
-- [Section]: [specific issue] — [why it matters]
-
-**Recommendations (advisory, do not block approval):**
-- [suggestions for improvement]
-```
+- Read for what a fresh reader would miss, not for what you meant to say
+- Treat each checklist category as an independent pass, not a single sweep
+- If a section feels "obviously fine," that is the section to read most carefully

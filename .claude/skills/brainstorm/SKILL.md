@@ -70,15 +70,9 @@ Offer 2-3 distinct ways to approach the topic. For each, give:
 
 End with a recommendation and your reasoning. Ask the user which direction they want to take.
 
-### Step 5: Design in sections
+### Step 5: Write the document
 
-Present the planned document structure and get agreement on it. Then co-create the content
-through dialogue, section by section — present each section as a draft or outline, get the
-user's approval or feedback, then refine before moving on.
-
-### Step 6: Write the document
-
-Once the content for all sections is agreed upon, write the final document to disk at:
+Once the user approves the chosen approach in Step 4, write the full document to disk at:
 
 ```
 docs/brainstorming/YYYY-MM-DD-<topic-slug>.md
@@ -108,24 +102,24 @@ type: <decision | creative | business | research | other>
 
 Every document ends with an **Open Questions** or **Next Steps** section.
 
-### Step 7: Review loop
+### Step 6: Self-review
 
-After writing the document, dispatch a subagent to review it. Read the reviewer instructions
-from `reviewer-prompt.md` in this skill's directory (next to this SKILL.md). Maximum 3
-iterations. If unresolved issues remain after
-3 iterations, surface them to the user.
+After writing the document, review it yourself against the checklist in `reviewer-prompt.md`
+in this skill's directory (next to this SKILL.md). Read your own output critically —
+Completeness, Consistency, Clarity, Scope, YAGNI — and revise in place until the checklist
+passes. Do not dispatch a subagent.
 
-### Step 8: User review gate
+### Step 7: User review gate
 
-After the review loop passes, send:
+After self-review passes, send:
 
 > "Doc written to `<path>`. Please review it and let me know if you want any changes before
 > we look at next steps."
 
 Wait for the user's response. If they request changes, update the document and re-run
-Step 7 before returning here.
+Step 6 before returning here.
 
-### Step 9: Offer next steps
+### Step 8: Offer next steps
 
 After the user approves the document, pick 2-3 options from this pool — choose the ones most
 relevant to the specific topic and what the user is trying to accomplish:
