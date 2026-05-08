@@ -24,6 +24,11 @@ alias gl="git log --oneline --graph --decorate"
 alias gsw="git switch"
 alias grs="git restore"
 
+alias gha="gh auth"
+alias ghal="gh auth login"
+alias ghasw="gh auth switch"
+alias ghast="gh auth status"
+
 # tmux Commands
 alias t='tmux'
 alias tl='tmux ls'
