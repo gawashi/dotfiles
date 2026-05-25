@@ -34,7 +34,6 @@ usage() {
     echo "  -f, --force      Force overwrite existing files without backup"
     echo "  -y, --yes        Skip confirmation prompts"
     echo "  -d, --dry-run    Show what would be done without making changes"
-    echo "  -b, --backup     Create backup even in dry-run mode"
     echo ""
     echo "Examples:"
     echo "  $0                 # Interactive mode with backup"
@@ -194,28 +193,6 @@ install_claude_skills() {
     done < <(find "$skills_source" -name "*.md" -print0)
 }
 
-install_claude_rules() {
-    local rules_source="$BASEDIR/.claude/rules"
-    local rules_target="$HOME/.claude/rules"
-
-    if [[ ! -d "$rules_source" ]]; then
-        return 0
-    fi
-
-    while IFS= read -r -d '' file; do
-        [[ -f "$file" ]] || continue
-        local rel_path="${file#"$rules_source"/}"
-        local abs_source
-        abs_source="$(realpath "$file" 2>/dev/null || echo "$file")"
-        local target="$rules_target/$rel_path"
-        local target_dir
-        target_dir="$(dirname "$target")"
-        if [[ "$DRY_RUN" == false ]]; then
-            mkdir -p "$target_dir"
-        fi
-        install_claude_symlink "$abs_source" "$target" ".claude/rules/$rel_path"
-    done < <(find "$rules_source" -name "*.md" -print0)
-}
 
 install_tools() {
     if [[ "$DRY_RUN" == true ]]; then
@@ -279,10 +256,6 @@ main() {
                 DRY_RUN=true
                 shift
                 ;;
-            -b|--backup)
-                # Force backup creation even in dry-run
-                shift
-                ;;
             *)
                 log_error "Unknown option: $1"
                 usage
@@ -302,14 +275,13 @@ main() {
     
     # Handle .claude skills and rules
     if [[ -d ".claude" ]]; then
-        if confirm "Install Claude Code skills and rules?"; then
+        if confirm "Install Claude Code skills?"; then
             if [[ "$DRY_RUN" == false ]]; then
-                mkdir -p "$HOME/.claude/skills" "$HOME/.claude/rules"
+                mkdir -p "$HOME/.claude/skills"
             fi
             install_claude_skills
-            install_claude_rules
         else
-            log_info "Skipping Claude Code skills and rules"
+            log_info "Skipping Claude Code skills"
         fi
     fi
     
